@@ -1,0 +1,125 @@
+#!/usr/bin/make -f
+# See debhelper(7) (uncomment to enable)
+# output every command that modifies files on the build system.
+export DH_VERBOSE = 1
+
+SED := sed
+
+PHP_NAME_VERSION := 5.6
+
+SED_VARIABLES := \
+	-e "s,@PHP_VERSION@,$(PHP_NAME_VERSION),g"
+
+SED_REPLACEMENT := $(SED) $(SED_VARIABLES)
+
+PREPARE_FILES := $(addprefix debian/,$(shell cat debian/prepare-files))
+
+API_VERSION := $(phpize5.6 -v | grep 'Zend Module Api' | cut -d: -f 2 | awk '{ print $1 }')
+
+# SED_VARIABLES := \
+# 	$(SED) -e "s,@sapi@,$${sapi},g"				|\
+# 	$(SED) -e "s,@package@,$${package},g"			|\
+# 	$(SED) -e "s,@extensions@,$${extensions},g"		|\
+# 	$(SED) -e "s,@module@,$${module},g"			|\
+# 	$(SED) -e "s,@extdir@,$${extdir},g"			|\
+# 	$(SED) -e "s,@priority@,$${priority},g"			|\
+# 	$(SED) -e "s,@PHP_VERSION@,$(PHP_NAME_VERSION),g"	|\
+# 	$(SED) -e "s,@PHP_MAJOR@,$(PHP_MAJOR_VERSION),g"	|\
+# 	$(SED) -e "s,@PHP_MINOR@,$(PHP_MINOR_VERSION),g"	|\
+# 	$(SED) -e "s,@PHP_RELEASE@,$(PHP_RELEASE_VERSION),g"	|\
+# 	$(SED) -e "s,@PHP_API@,$(PHP_ZEND_VERSION),g"
+
+prepare-files-stamp:
+	# Do this first so we don't overwrite any debhelper-generated files
+	#
+	# generate versioned files from versionless variants
+	for file in $(PREPARE_FILES); do \
+	    target=$$(echo $$file | sed "s,.extra,,"); \
+	    cat $$file | $(SED_REPLACEMENT) > $$target ; \
+	done
+
+
+configure: prepare-files-stamp
+	phpize5.6
+	dh_testdir
+	./configure --prefix /usr
+	touch configure-stamp
+
+build: configure
+	dh_testroot
+	dh_prep
+	dh_installdirs
+	
+	$(MAKE) install INSTALL_ROOT=debian/tmp
+	
+	# dh_auto_install
+	dh_install
+	dh_installdocs
+	dh_installchangelogs
+	dh_installexamples
+	dh_installman
+	dh_installcatalogs
+	dh_installcron
+	dh_installdebconf
+	dh_installemacsen
+	dh_installifupdown
+	dh_installinfo
+	dh_installinit
+	dh_installmenu
+	dh_installmime
+	dh_installmodules
+	dh_installlogcheck
+	dh_installlogrotate
+	dh_installpam
+	dh_installppp
+	dh_installudev
+	dh_installwm
+	dh_installxfonts
+	dh_bugfiles
+	dh_lintian
+	dh_gconf
+	dh_icons
+	dh_perl
+	dh_usrlocal
+	dh_link
+	dh_compress
+	dh_fixperms
+	dh_strip
+	dh_makeshlibs
+	dh_shlibdeps
+	dh_installdeb
+	dh_gencontrol
+	dh_md5sums
+	dh_builddeb
+
+clean:
+	dh_testdir
+	dh_auto_clean
+	dh_clean
+	phpize5.6 --clean
+
+binary:
+	dh_auto_install
+	dh_install
+	dh_installdocs
+	dh_installchangelogs
+	dh_installexamples
+	dh_installman
+	dh_installcatalogs
+	dh_installcron
+	dh_installdebconf
+	dh_installemacsen
+	dh_installifupdown
+	dh_installinfo
+	dh_installinit
+	dh_installmenu
+	dh_installmime
+	dh_installmodules
+	dh_installlogcheck
+	dh_installlogrotate
+	dh_installpam
+	dh_installppp
+	dh_installudev
+	dh_installwm
+	dh_installxfonts
+

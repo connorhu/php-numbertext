@@ -1,0 +1,7 @@
+if [ "$1" = "configure" ] && [ -n "$2" ]; then
+    for sapi in $(phpquery -v 5.6 -S); do
+	if [ -h /etc/php/5.6/$sapi/conf.d/20-numbertext.ini ]; then
+	    rm /etc/php/5.6/$sapi/conf.d/20-numbertext.ini;
+	fi
+    done
+fi

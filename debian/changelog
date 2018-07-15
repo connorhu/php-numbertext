@@ -1,0 +1,5 @@
+php-numbertext (0.1-1) unstable; urgency=medium
+
+  * Initial release (Closes: #nnnn)  <nnnn is the bug number of your ITP>
+
+ -- Károly Gossler <connor@connor.hu>  Sun, 15 Jul 2018 13:41:19 +0000
